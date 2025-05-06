@@ -13,6 +13,9 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as functions_mutations_createRecording from "../functions/mutations/createRecording.js";
+import type * as functions_mutations_updateRecordingName from "../functions/mutations/updateRecordingName.js";
+import type * as functions_queries_listRecordings from "../functions/queries/listRecordings.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -22,7 +25,11 @@ import type {
  * const myFunctionReference = api.myModule.myFunction;
  * ```
  */
-declare const fullApi: ApiFromModules<{}>;
+declare const fullApi: ApiFromModules<{
+  "functions/mutations/createRecording": typeof functions_mutations_createRecording;
+  "functions/mutations/updateRecordingName": typeof functions_mutations_updateRecordingName;
+  "functions/queries/listRecordings": typeof functions_queries_listRecordings;
+}>;
 export declare const api: FilterApi<
   typeof fullApi,
   FunctionReference<any, "public">
