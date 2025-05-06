@@ -18,6 +18,7 @@ import {
   View,
 } from "react-native";
 import { api } from "../convex/_generated/api";
+import { Doc } from "../convex/_generated/dataModel";
 
 export default function RecordingScreen() {
   // Convex setup
@@ -135,7 +136,7 @@ export default function RecordingScreen() {
       />
 
       <Text style={styles.sectionTitle}>Saved Recordings</Text>
-      {recordings.map((rec) => (
+      {recordings.map((rec: Doc<"recordings">) => (
         <View key={rec._id} style={styles.recordingItem}>
           <Text style={styles.recordingText} numberOfLines={1}>
             {rec.name || rec.audioUrl}
