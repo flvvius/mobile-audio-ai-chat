@@ -8,6 +8,7 @@ import {
   useAudioRecorderState,
 } from "expo-audio";
 import * as FileSystem from "expo-file-system";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -37,6 +38,8 @@ export default function RecordingScreen() {
 
   // Active player state
   const [activePlayer, setActivePlayer] = useState<AudioPlayer | null>(null);
+
+  const router = useRouter();
 
   // Ask permission once
   useEffect(() => {
@@ -138,10 +141,28 @@ export default function RecordingScreen() {
       <Text style={styles.sectionTitle}>Saved Recordings</Text>
       {recordings.map((rec: Doc<"recordings">) => (
         <View key={rec._id} style={styles.recordingItem}>
-          <Text style={styles.recordingText} numberOfLines={1}>
+          <Text
+            style={styles.recordingText}
+            numberOfLines={1}
+            onPress={() => {
+              const id = rec._id;
+              if (id && id.trim() !== "") {
+                console.log("Navigating to recording detail with ID:", id);
+                router.navigate(`/recording/${id}`);
+              } else {
+                console.error(
+                  "Error: Attempted to navigate with invalid rec._id:",
+                  id
+                );
+                Alert.alert(
+                  "Navigation Error",
+                  "Cannot open recording: Invalid ID."
+                );
+              }
+            }}
+          >
             {rec.name || rec.audioUrl}
           </Text>
-          <Button title="Play" onPress={() => playAudio(rec.audioUrl)} />
           <Button title="Rename" onPress={() => promptRename(rec)} />
         </View>
       ))}
@@ -172,5 +193,6 @@ const styles = StyleSheet.create({
   recordingText: {
     flex: 1,
     marginRight: 10,
+    paddingVertical: 10,
   },
 });

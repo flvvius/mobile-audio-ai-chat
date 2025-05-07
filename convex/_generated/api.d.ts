@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as functions_mutations_createRecording from "../functions/mutations/createRecording.js";
 import type * as functions_mutations_updateRecordingName from "../functions/mutations/updateRecordingName.js";
+import type * as functions_queries_getRecordingById from "../functions/queries/getRecordingById.js";
 import type * as functions_queries_listRecordings from "../functions/queries/listRecordings.js";
 
 /**
@@ -28,6 +29,7 @@ import type * as functions_queries_listRecordings from "../functions/queries/lis
 declare const fullApi: ApiFromModules<{
   "functions/mutations/createRecording": typeof functions_mutations_createRecording;
   "functions/mutations/updateRecordingName": typeof functions_mutations_updateRecordingName;
+  "functions/queries/getRecordingById": typeof functions_queries_getRecordingById;
   "functions/queries/listRecordings": typeof functions_queries_listRecordings;
 }>;
 export declare const api: FilterApi<
