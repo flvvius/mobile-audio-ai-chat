@@ -1,5 +1,5 @@
 import { AudioPlayer, useAudioPlayerStatus } from "expo-audio";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
 interface AudioPlayerProps {
@@ -11,15 +11,24 @@ export default function AudioPlayerComponent({ player }: AudioPlayerProps) {
   const [currentPlaybackSpeed, setCurrentPlaybackSpeed] = useState(1.0);
 
   const togglePlayPause = async () => {
-    if (!playerStatus) return;
-    console.log(
-      "togglePlayPause. Current status playing:",
-      playerStatus.playing
-    );
-    if (playerStatus.playing) {
-      await player.pause();
-    } else {
-      await player.play();
+    if (!playerStatus) {
+      console.log("togglePlayPause: playerStatus is null or undefined");
+      return;
+    }
+    try {
+      console.log(
+        "togglePlayPause. Current status playing:",
+        playerStatus.playing
+      );
+      if (playerStatus.playing) {
+        await player.pause();
+        console.log("Called player.pause()");
+      } else {
+        await player.play();
+        console.log("Called player.play()");
+      }
+    } catch (error) {
+      console.error("Error in togglePlayPause:", error);
     }
   };
 
@@ -40,6 +49,24 @@ export default function AudioPlayerComponent({ player }: AudioPlayerProps) {
     await player.setPlaybackRate(speed);
     setCurrentPlaybackSpeed(speed);
   };
+
+  // Effect to detect when playback ends and reset UI
+  useEffect(() => {
+    async function handlePlaybackEnd() {
+      if (
+        playerStatus &&
+        playerStatus.duration !== null &&
+        playerStatus.currentTime !== null &&
+        playerStatus.currentTime >= playerStatus.duration
+      ) {
+        // Explicitly pause the player so status updates
+        await player.pause();
+        await player.seekTo(0);
+        setCurrentPlaybackSpeed(1.0);
+      }
+    }
+    handlePlaybackEnd();
+  }, [playerStatus?.currentTime, playerStatus?.duration]);
 
   return (
     <View style={styles.container}>
